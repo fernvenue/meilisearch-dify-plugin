@@ -4,7 +4,7 @@ from dify_plugin import Tool
 import ast, json, requests
 
 class SearchWithUrlQuery(Tool):
-    def _invoke(self, tool_parameters: dict[str, Any]) -> Generator[ToolInvokeMessage]:
+    def _invoke(self, tool_parameters: dict[str, Any]) -> Generator[ToolInvokeMessage, None, None]:
         searchPayload = {
             "q": tool_parameters["q"],
             "offset": tool_parameters.get("offset", 0),
