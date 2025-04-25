@@ -1,4 +1,4 @@
-version: 0.1.0
+version: 0.1.1
 type: plugin
 author: fernvenue
 name: meilisearch
@@ -18,7 +18,7 @@ plugins:
   tools:
     - provider/meilisearch.yaml
 meta:
-  version: 0.1.0
+  version: 0.1.1
   arch:
     - amd64
     - arm64
