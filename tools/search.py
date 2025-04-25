@@ -1,14 +1,12 @@
 from typing import Any, Generator
 from dify_plugin.entities.tool import ToolInvokeMessage
 from dify_plugin import Tool
-
-import ast, json, meilisearch
+import ast, json, requests
 
 class SearchWithUrlQuery(Tool):
     def _invoke(self, tool_parameters: dict[str, Any]) -> Generator[ToolInvokeMessage]:
-        client = meilisearch.Client(self.runtime.credentials["base_url"], self.runtime.credentials["meilisearch_api_key"])
-        index = client.index(tool_parameters["indexUid"])
-        response = index.search(tool_parameters["q"], {
+        searchPayload = {
+            "q": tool_parameters["q"],
             "offset": tool_parameters.get("offset", 0),
             "limit": tool_parameters.get("limit", 20),
             "hitsPerPage": tool_parameters.get("hitsPerPage", 1),
@@ -33,5 +31,11 @@ class SearchWithUrlQuery(Tool):
             "vector": ast.literal_eval(tool_parameters.get("vector")) if tool_parameters.get("vector", None) else None,
             "retrieveVectors": tool_parameters.get("retrieveVectors", False),
             "locales": ast.literal_eval(tool_parameters.get("locales")) if tool_parameters.get("locales", None) else None
-        })
-        yield self.create_json_message(response)
+        }
+
+        response = requests.post(
+            f"{self.runtime.credentials['base_url']}/indexes/{tool_parameters['indexUid']}/search",
+            headers={"Authorization": f"Bearer {self.runtime.credentials['meilisearch_api_key']}"},
+            json=searchPayload
+        )
+        yield self.create_json_message(response.json())

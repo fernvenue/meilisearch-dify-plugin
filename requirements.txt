@@ -1,2 +1,0 @@
-dify_plugin==0.0.1b74
-meilisearch==0.34.0
